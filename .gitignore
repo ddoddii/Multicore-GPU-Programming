@@ -1,0 +1,12 @@
+.bash_logout
+.bashrc
+.cache/
+.local/
+.profile
+.vim
+.viminfo
+.vscode
+.zshrc
+
+.SpaceVim.d/
+.SpaceVim/
