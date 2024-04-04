@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 
   if(argc < 2) std::cout<<"Usage : ./filter num_items"<<std::endl;
   int N = atoi(argv[1]);
-  int NT=32; //Default value. change it as you like.
+  int NT=12; //Default value. change it as you like.
 
 
   //0. Initialize
@@ -53,8 +53,9 @@ int main(int argc, char** argv)
     auto start = std::chrono::steady_clock::now();
     /* TODO: put your own parallelized 1D filter here */
     /****************/
+
     std::vector<std::thread> threads;
-    int chunkSize = (N-4)/NT;
+    int chunkSize = (N - 4 + NT - 1) / NT;
 
     auto parallelFilter = [&](int start, int end) {
             for (int i = start; i < end; i++) {
@@ -77,6 +78,7 @@ int main(int argc, char** argv)
 	    thread.join();
     }
 
+	  	
 
     /****************/
     /* TODO: put your own parallelized 1D filter here */
@@ -98,6 +100,7 @@ int main(int argc, char** argv)
         }
       }
     }
+
 
 
     if(error_counts==0) {
