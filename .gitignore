@@ -10,3 +10,8 @@
 
 .SpaceVim.d/
 .SpaceVim/
+*/out
+threading/out
+CMakeLists.txt
+cmake-build-debug
+.idea
