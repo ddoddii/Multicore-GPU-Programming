@@ -28,8 +28,7 @@ Collisions happen when two or more keys point to the same array index. Chaining,
 ### Why is hash table fast?
 
 For hash table, search, insert and delete are all O(1) on average and worst case O(n). O(1) means their execution time does not depend on the number of elements in the table. The hash value works as an index, so no matter how many elements are in the hash table, I don't have to search through the whole table (which takes O(n)), instead I can just use the index to find the position in the hash table.
-
- To explain this, let's look at some generalized metrics on latencies. 
+ 
 
 ## 2. Thread-safe Hash Table
 
