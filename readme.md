@@ -1,6 +1,6 @@
 # Multicore GPU Programming
 
-Learning various ways to **optimize GPU calculations** with c++. Interested ? ☄️
+Learning various ways to **optimize GPU calculations** with c++. Interested ?<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Sunglasses.png" alt="Smiling Face with Sunglasses" width="25" height="25" />
 
 |Theme|Post|
 |--|--|
