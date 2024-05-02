@@ -14,6 +14,8 @@ matmul: matmul_o $(build)/driver.o
 		$(build)/matmul.o
 	./matmul ../input/matrix3.in ../input/matrix3.out
 	./matmul ../input/matrix128.in ../input/matrix128.out
+	./matmul ../input/matrix1024.in ../input/matrix1024.out
+	./matmul ../input/matrix2048.in ../input/matrix2048.out
 
 matmul_o:
 	$(GPP) -c $(src)/matmul.cpp -o $(build)/matmul.o
