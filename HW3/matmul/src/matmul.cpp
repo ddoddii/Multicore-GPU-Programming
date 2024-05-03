@@ -29,13 +29,13 @@ void matmul_optimized(const int *const matrixA, const int *const matrixB, int *c
 {
     std::vector<int> B_trans(m * n);
     transpose(matrixB, B_trans.data(), n, m);
-#pragma omp parallel for shared(matrixA, matrixB, matrixC) schedule(static) num_threads(THREADS)
+#pragma omp parallel for shared(matrixA, matrixB, matrixC) schedule(dynamic, -1) num_threads(THREADS)
     for (int i = 0; i < n; i++)
     {
-        for (int j = 0; j < n; j++)
+        for (int k = 0; k < m; k++)
         {
             int sum = 0;
-            for (int k = 0; k < m; k++)
+            for (int j = 0; j < n; j++)
             {
                 sum += matrixA[i * m + k] * B_trans[j * m + k];
             }
