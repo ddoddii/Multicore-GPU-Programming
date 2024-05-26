@@ -49,19 +49,27 @@ int main(void)
     }
     auto end_cpu = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration_cpu = end_cpu - start_cpu;
-    printf("CPU time: %f seconds\n", duration_cpu.count());
+    printf("CPU computation time: %f seconds\n", duration_cpu.count());
 
     // Memory allocation on device-side
+    auto start_cudamalloc = std::chrono::high_resolution_clock::now();
     cudaMalloc(&da, memSize);
     cudaMemset(da, 0, memSize);
     cudaMalloc(&db, memSize);
     cudaMemset(db, 0, memSize);
     cudaMalloc(&dc, memSize);
     cudaMemset(dc, 0, memSize);
+    auto end_cudamalloc = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> cudamalloc_gpu = end_cudamalloc - start_cudamalloc;
+    printf("Cuda malloc time: %f seconds\n", cudamalloc_gpu.count());
 
     // Data copy : Host -> Device
+    auto start_cudamemcpy = std::chrono::high_resolution_clock::now();
     cudaMemcpy(da, a, memSize, cudaMemcpyHostToDevice);
     cudaMemcpy(db, b, memSize, cudaMemcpyHostToDevice);
+    auto end_cudamemcpy = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> cudamemcpy_gpu = end_cudamemcpy - start_cudamemcpy;
+    printf("Cuda Memcpy time: %f seconds\n", cudamemcpy_gpu.count());
 
     // Measure time for kernel execution
     auto start_gpu = std::chrono::high_resolution_clock::now();
@@ -70,7 +78,7 @@ int main(void)
     cudaDeviceSynchronize();
     auto end_gpu = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration_gpu = end_gpu - start_gpu;
-    printf("GPU time: %f seconds\n", duration_gpu.count());
+    printf("GPU computation time: %f seconds\n", duration_gpu.count());
 
     // Copy results : Device -> Host
     cudaMemcpy(c, dc, memSize, cudaMemcpyDeviceToHost);
