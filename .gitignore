@@ -15,3 +15,4 @@ threading/out
 CMakeLists.txt
 cmake-build-debug
 .idea
+threading/out/
