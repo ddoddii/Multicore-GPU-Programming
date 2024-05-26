@@ -266,7 +266,7 @@ I’ve done evaluation for each matrix multiplication introduced at [2. Implemen
 
 #### 4.2.1 Block Size
 
-Let's start with optimizing the size of sub-matrix. As mentioned earlier, since large B leads to more speed up, we need to choose maximum B while maintaining two sub-matrices of matrix A and B fit into L1 cache. L1 D cache for each core is 32KB, therefore we can simply calculate the optimum \( B = \sqrt{\frac{2^{15}}{2^2 \times 2}} = 2^6 \).
+Let's start with optimizing the size of sub-matrix. As mentioned earlier, since large B leads to more speed up, we need to choose maximum B while maintaining two sub-matrices of matrix A and B fit into L1 cache. L1 D cache for each core is 32KB, therefore we can simply calculate the optimum $B = \sqrt{\frac{2^{15}}{2^2 \times 2}} = 2^6$.
 
 | Block Size (B) | Matrix Size | Run Time [sec] |
 |----------------|-------------|----------------|
