@@ -11,6 +11,7 @@
 |OpenMP|[멀티쓰레딩을 편리하게 해주는 OpenMP 사용법](https://ddoddii.github.io/post/cs/mgp/openmp/)|
 |Graph Processing|[그래프 구조를 더 효율적으로 저장하는 방법들](https://ddoddii.github.io/post/cs/mgp/graph-processing/)|
 |Prefix sum|[Prefix Sum : 효율적인 연산을 위한 가이드](https://ddoddii.github.io/post/cs/mgp/prefix-sum/#kogge-stone-algorithm)|
+|CUDA Programming Intro|[CUDA 프로그래밍 기초](https://ddoddii.github.io/post/cs/mgp/cuda-programming/)|
 
 
 ## Content Breakdown 
@@ -53,3 +54,7 @@ The repository covers a wide range of topics, each aimed at improving efficiency
 - Post: [Prefix Sum : 효율적인 연산을 위한 가이드](https://ddoddii.github.io/post/cs/mgp/prefix-sum/#kogge-stone-algorithm)
 - Description: Gain a comprehensive understanding of the prefix sum algorithm and its applications in efficient computation.
 
+### CUDA 101
+  
+- Post : [CUDA 프로그래밍 기초](https://ddoddii.github.io/post/cs/mgp/cuda-programming/)
+- Description : This section provides an introduction to CUDA programming, designed for those new to GPU programming. This post includes the basics of CUDA, including how to set up your development environment, write and compile your first CUDA program.
