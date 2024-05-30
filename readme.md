@@ -63,4 +63,4 @@ The repository covers a wide range of topics, each aimed at improving efficiency
 ### CUDA thread hierarchy
 
 - Post : [CUDA 스레드 계층구조 알아보기](https://ddoddii.github.io/post/cs/mgp/cuda-programming-2/)
-- Description : This sections helps understand the hierarchical structure of CUDA threads, including grids, blocks, and threads. This post includes calculating global thread index through thread indexing and some example code about image processing. 
+- Description : This section provides detailed explanation about the hierarchical structure of CUDA threads, including grids, blocks, and threads. This post includes calculating global thread index through thread indexing and some example code about image processing. 
