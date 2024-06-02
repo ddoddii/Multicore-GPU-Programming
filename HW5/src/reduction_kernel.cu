@@ -78,6 +78,10 @@ void reduce_optimize(const int *const g_idata, int *const g_odata, const int *co
     reduce1<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
     reduce1<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
     reduce1<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
+
+    reduce2<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
+    reduce2<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
+    reduce2<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
 }
 
 // Reduction #1 : Interleaved Addressing with divergent branching
@@ -101,4 +105,31 @@ __global__ void reduce1(int *g_idata, int *g_odata, unsigned int n)
     }
     if (tid == 0)
         g_odata[blockIdx.x] = sdata[0];
+}
+
+// Reduction #2 : Interleaved Addressing with Bank Conflicts
+__global__ void reduce2(int *g_idata, int *g_odata, unsigned int n)
+{
+    extern __shared__ int sdata[];
+
+    unsigned int tid = threadIdx.x;
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    sdata[tid] = (i < n) ? g_idata[i] : 0;
+    __syncthreads();
+
+    for (unsigned int s = 1; s < blockDim.x; s *= 2)
+    {
+        int index = 2 * s * tid;
+        if (index < blockDim.x)
+        {
+            sdata[index] += sdata[index + s];
+        }
+        __syncthreads();
+    }
+
+    if (tid == 0)
+    {
+        g_odata[blockIdx.x] = sdata[0];
+    }
 }
