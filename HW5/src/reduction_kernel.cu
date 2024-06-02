@@ -75,13 +75,17 @@ void reduce_optimize(const int *const g_idata, int *const g_odata, const int *co
     int blocks = (n + threads - 1) / threads;
     int remain = blocks / threads;
 
-    reduce1<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
-    reduce1<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
-    reduce1<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
+    // reduce1<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
+    // reduce1<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
+    // reduce1<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
 
-    reduce2<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
-    reduce2<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
-    reduce2<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
+    // reduce2<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
+    // reduce2<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
+    // reduce2<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
+
+    reduce3<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
+    reduce3<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
+    reduce3<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
 }
 
 // Reduction #1 : Interleaved Addressing with divergent branching
@@ -124,6 +128,32 @@ __global__ void reduce2(int *g_idata, int *g_odata, unsigned int n)
         if (index < blockDim.x)
         {
             sdata[index] += sdata[index + s];
+        }
+        __syncthreads();
+    }
+
+    if (tid == 0)
+    {
+        g_odata[blockIdx.x] = sdata[0];
+    }
+}
+
+// Sequential Addressing
+__global__ void reduce3(int *g_idata, int *g_odata, unsigned int n)
+{
+    extern __shared__ int sdata[];
+
+    unsigned int tid = threadIdx.x;
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    sdata[tid] = (i < n) ? g_idata[i] : 0;
+    __syncthreads();
+
+    for (unsigned int s = blockDim.x / 2; s > 0; s >>= 1)
+    {
+        if (tid < s)
+        {
+            sdata[tid] += sdata[tid + s];
         }
         __syncthreads();
     }
