@@ -167,3 +167,31 @@ __global__ void reduce3(int *g_idata, int *g_odata, unsigned int n)
         g_odata[blockIdx.x] = sdata[0];
     }
 }
+
+// Reduction #4 : First Add during Global Memory Load
+__global__ void reduce4(int *g_idata, int *g_odata, unsigned int n)
+{
+    extern __shared__ int sdata[];
+
+    unsigned int tid = threadIdx.x;
+    unsigned int i = blockIdx.x * (blockDim.x * 2) + threadIdx.x;
+
+    int temp = (i < n) ? g_idata[i] : 0;
+    temp += g_idata[i + blockDim.x];
+    sdata[tid] = temp;
+    __syncthreads();
+
+    for (unsigned int s = blockDim.x / 2; s > 0; s >>= 1)
+    {
+        if (tid < s)
+        {
+            sdata[tid] += sdata[tid + s];
+        }
+        __syncthreads();
+    }
+
+    if (tid == 0)
+    {
+        g_odata[blockIdx.x] = sdata[0];
+    }
+}
