@@ -87,9 +87,13 @@ void reduce_optimize(const int *const g_idata, int *const g_odata, const int *co
     // reduce3<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
     // reduce3<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
 
-    reduce4<<<blocks, threads / 2, threads / 2 * sizeof(int)>>>((int *)d_idata, d_odata, n);
-    reduce4<<<2 * remain, threads / 2, threads / 2 * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
-    reduce4<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, 2 * remain);
+    // reduce4<<<blocks, threads / 2, threads / 2 * sizeof(int)>>>((int *)d_idata, d_odata, n);
+    // reduce4<<<2 * remain, threads / 2, threads / 2 * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
+    // reduce4<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, 2 * remain);
+
+    reduce5<<<blocks, threads / 2, threads / 2 * sizeof(int)>>>((int *)d_idata, d_odata, n);
+    reduce5<<<2 * remain, threads / 2, threads / 2 * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
+    reduce5<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, 2 * remain);
 }
 
 // Reduction #1 : Interleaved Addressing with divergent branching
@@ -188,6 +192,51 @@ __global__ void reduce4(int *g_idata, int *g_odata, unsigned int n)
             sdata[tid] += sdata[tid + s];
         }
         __syncthreads();
+    }
+
+    if (tid == 0)
+    {
+        g_odata[blockIdx.x] = sdata[0];
+    }
+}
+
+//  Reduction #5 : Unrolling Last Warp
+__global__ void reduce5(int *g_idata, int *g_odata, unsigned int n)
+{
+    extern __shared__ int sdata[];
+
+    unsigned int tid = threadIdx.x;
+    unsigned int i = blockIdx.x * (blockDim.x * 2) + threadIdx.x;
+
+    int temp = (i < n) ? g_idata[i] : 0;
+    temp += g_idata[i + blockDim.x];
+    sdata[tid] = temp;
+    __syncthreads();
+
+    for (unsigned int s = blockDim.x / 2; s > 32; s >>= 1)
+    {
+        if (tid < s)
+        {
+            sdata[tid] += sdata[tid + s];
+        }
+        __syncthreads();
+    }
+
+    if (tid < 32)
+    {
+        volatile int *smem = sdata;
+        if (blockDim.x >= 64)
+            smem[tid] += smem[tid + 32];
+        if (blockDim.x >= 32)
+            smem[tid] += smem[tid + 16];
+        if (blockDim.x >= 16)
+            smem[tid] += smem[tid + 8];
+        if (blockDim.x >= 8)
+            smem[tid] += smem[tid + 4];
+        if (blockDim.x >= 4)
+            smem[tid] += smem[tid + 2];
+        if (blockDim.x >= 2)
+            smem[tid] += smem[tid + 1];
     }
 
     if (tid == 0)
