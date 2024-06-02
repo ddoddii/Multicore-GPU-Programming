@@ -83,9 +83,13 @@ void reduce_optimize(const int *const g_idata, int *const g_odata, const int *co
     // reduce2<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
     // reduce2<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
 
-    reduce3<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
-    reduce3<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
-    reduce3<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
+    // reduce3<<<blocks, threads, threads * sizeof(int)>>>((int *)d_idata, d_odata, n);
+    // reduce3<<<remain, threads, threads * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
+    // reduce3<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, remain);
+
+    reduce4<<<blocks, threads / 2, threads / 2 * sizeof(int)>>>((int *)d_idata, d_odata, n);
+    reduce4<<<2 * remain, threads / 2, threads / 2 * sizeof(int)>>>((int *)d_odata, d_odata, blocks);
+    reduce4<<<1, remain, remain * sizeof(int)>>>((int *)d_odata, d_odata, 2 * remain);
 }
 
 // Reduction #1 : Interleaved Addressing with divergent branching
@@ -138,7 +142,7 @@ __global__ void reduce2(int *g_idata, int *g_odata, unsigned int n)
     }
 }
 
-// Sequential Addressing
+// Reduction #3 : Sequential Addressing
 __global__ void reduce3(int *g_idata, int *g_odata, unsigned int n)
 {
     extern __shared__ int sdata[];
