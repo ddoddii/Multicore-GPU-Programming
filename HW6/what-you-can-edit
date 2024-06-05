@@ -1,0 +1,8 @@
+You can only edit "src/vgg16_cuda.cu"
+
+- Do whatever you want in the file
+- This file have to run in the GPU context
+
+- You don't take care of time and accuracy limit -- which have a very huge margin!
+
+- Have fun :)
