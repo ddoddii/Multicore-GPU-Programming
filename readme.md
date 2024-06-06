@@ -12,7 +12,8 @@
 |Graph Processing|[그래프 구조를 더 효율적으로 저장하는 방법들](https://ddoddii.github.io/post/cs/mgp/graph-processing/)|
 |Prefix sum|[Prefix Sum : 효율적인 연산을 위한 가이드](https://ddoddii.github.io/post/cs/mgp/prefix-sum/#kogge-stone-algorithm)|
 |CUDA Programming Intro|[CUDA 프로그래밍 기초](https://ddoddii.github.io/post/cs/mgp/cuda-programming/)|
-|CUDA Thread Hierarchy|[CUDA 스레드 계층구조 알아보기](https://ddoddii.github.io/post/cs/mgp/cuda-programming-2/)|
+|CPU-GPU communication and thread indexing|[CPU-GPU 통신 및 CUDA를 활용한 이미지 프로세싱 기법](https://ddoddii.github.io/post/cs/mgp/cuda-programming-2/)|
+|CUDA thread hierarchy, memory hierarchy, GPU cache structure|[CUDA와 Nvidia GPU 아키텍처: 스레드 계층, 메모리 계층 및 GPU 캐시 구조 이해하기](https://ddoddii.github.io/post/cs/mgp/cuda-programming-3/)|
 
 
 ## Content Breakdown 
@@ -60,7 +61,12 @@ The repository covers a wide range of topics, each aimed at improving efficiency
 - Post : [CUDA 프로그래밍 기초](https://ddoddii.github.io/post/cs/mgp/cuda-programming/)
 - Description : This section provides an introduction to CUDA programming, designed for those new to GPU programming. This post includes the basics of CUDA, including how to set up your development environment, write and compile your first CUDA program.
 
-### CUDA thread hierarchy
+### CPU-GPU communication and thread indexing
 
-- Post : [CUDA 스레드 계층구조 알아보기](https://ddoddii.github.io/post/cs/mgp/cuda-programming-2/)
-- Description : This section provides detailed explanation about the hierarchical structure of CUDA threads, including grids, blocks, and threads. This post includes calculating global thread index through thread indexing and some example code about image processing. 
+- Post : [CPU-GPU 통신 및 CUDA를 활용한 이미지 프로세싱 기법](https://ddoddii.github.io/post/cs/mgp/cuda-programming-2/)
+- Description : This section provides detailed explanation about the hierarchical structure of CUDA threads, including grids, blocks, and threads. This post includes calculating global thread index through thread indexing and some example code about image processing.
+
+### CUDA thread hierarchy, memory hierarchy, GPU cache structure
+
+- Post : [CUDA와 Nvidia GPU 아키텍처: 스레드 계층, 메모리 계층 및 GPU 캐시 구조 이해하기](https://ddoddii.github.io/post/cs/mgp/cuda-programming-3/)
+- Description : This section delves into the advanced aspects of CUDA and Nvidia GPU architecture, including the hierarchical organization of threads, the different levels of memory, and the structure of GPU caches.
