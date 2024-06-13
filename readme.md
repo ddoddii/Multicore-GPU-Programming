@@ -1,6 +1,9 @@
 # Multicore GPU Programming
 
-**TL;DR**
+The repository covers a wide range of topics, each aimed at improving efficiency and performance in **GPU programming**. Here’s a detailed look at what I learned: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Nerd%20Face.png" alt="Nerd Face" width="25" height="25" />
+
+
+## Theory 
 
 |Theme|Post|
 |--|--|
@@ -15,11 +18,19 @@
 |CPU-GPU communication and thread indexing|[CPU-GPU 통신 및 CUDA를 활용한 이미지 프로세싱 기법](https://ddoddii.github.io/post/cs/mgp/cuda-programming-2/)|
 |CUDA thread hierarchy, memory hierarchy, GPU cache structure|[CUDA와 Nvidia GPU 아키텍처: 스레드 계층, 메모리 계층 및 GPU 캐시 구조 이해하기](https://ddoddii.github.io/post/cs/mgp/cuda-programming-3/)|
 
+## Hands on Assignment
 
-## Content Breakdown 
+|Assignment|Description|Link|
+|----|---|--|
+|Assignment #1|A Simple Filter on 1D Array|[link](https://github.com/ddoddii/Multicore-GPU-Programming/tree/master/HW1)|
+|Assignment #2|Hash table locking|[link](https://github.com/ddoddii/Multicore-GPU-Programming/tree/master/HW2)|
+|Assignment #3|Matrix Multiplication|[link](https://github.com/ddoddii/Multicore-GPU-Programming/tree/master/HW3)|
+|Assignment #4|Matrix Multiplication using CUDA|[link](https://github.com/ddoddii/Multicore-GPU-Programming/tree/master/HW4)|
+|Assignment #5|Sum Reduction|[link](https://github.com/ddoddii/Multicore-GPU-Programming/tree/master/HW5)|
+|Assignment #6|CUDA Application of DNN|[link](https://github.com/ddoddii/Multicore-GPU-Programming/tree/master/HW6)|
 
-The repository covers a wide range of topics, each aimed at improving efficiency and performance in **GPU programming**. Here’s a detailed look at what I learned: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Nerd%20Face.png" alt="Nerd Face" width="25" height="25" />
 
+## Content Breakdown
 
 ### Basic Parallel Architectures
 
