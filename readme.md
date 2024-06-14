@@ -17,6 +17,7 @@ The repository covers a wide range of topics, each aimed at improving efficiency
 |CUDA Programming Intro|[CUDA 프로그래밍 기초](https://ddoddii.github.io/post/cs/mgp/cuda-programming/)|
 |CPU-GPU communication and thread indexing|[CPU-GPU 통신 및 CUDA를 활용한 이미지 프로세싱 기법](https://ddoddii.github.io/post/cs/mgp/cuda-programming-2/)|
 |CUDA thread hierarchy, memory hierarchy, GPU cache structure|[CUDA와 Nvidia GPU 아키텍처: 스레드 계층, 메모리 계층 및 GPU 캐시 구조 이해하기](https://ddoddii.github.io/post/cs/mgp/cuda-programming-3/)|
+|CUDA memories : registers, shared memory, global memory|[CUDA Memories : 레지스터, 공유 메모리, 글로벌 메모리](https://ddoddii.github.io/post/cs/mgp/cuda-programming-matmul-1/)|
 
 ## Hands on Assignment
 
@@ -81,3 +82,8 @@ The repository covers a wide range of topics, each aimed at improving efficiency
 
 - Post : [CUDA와 Nvidia GPU 아키텍처: 스레드 계층, 메모리 계층 및 GPU 캐시 구조 이해하기](https://ddoddii.github.io/post/cs/mgp/cuda-programming-3/)
 - Description : This section delves into the advanced aspects of CUDA and Nvidia GPU architecture, including the hierarchical organization of threads, the different levels of memory, and the structure of GPU caches.
+
+### CUDA memories : registers, shared memory, global memory
+
+- Post : [CUDA Memories : 레지스터, 공유 메모리, 글로벌 메모리](https://ddoddii.github.io/post/cs/mgp/cuda-programming-matmul-1/)
+- Decsription : This section explores the different types of memory in CUDA, focusing on registers, shared memory, and global memory. his post delves into the characteristics of each memory type and provides strategies for effectively utilizing them to enhance the efficiency of CUDA kernels.
