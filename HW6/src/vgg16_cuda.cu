@@ -9,10 +9,6 @@
 #include <string>
 #include <vector>
 
-#define BLOCK_SIZE 32
-#define TILE_WIDTH 16
-#define KERNEL_RADIUS 1
-
 const int pool_size = 2;
 const int pool_stride = 2;
 
