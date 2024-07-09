@@ -31,10 +31,13 @@ std::string input_path;
 std::string output_path;
 llvm::LLVMContext* TheContext;
 std::unique_ptr<llvm::Module> TheModule;
+llvm::GlobalVariable* addInstCount;
 
 void ParseIRSource(void);
 void TraverseModule(void);
 void PrintModule(void);
+void AddGlobalVariable(void);
+void AddPrintFunction(void);
 
 int main(int argc , char** argv)
 {
@@ -48,8 +51,12 @@ int main(int argc , char** argv)
 
 	// Read & Parse IR Source
 	ParseIRSource();
+	// Add Global Variable
+	AddGlobalVariable();
 	// Traverse TheModule
 	TraverseModule();
+	// Add Print Function
+	AddPrintFunction();
 	// Print TheModule to output_path
 	PrintModule();
 
@@ -79,26 +86,84 @@ void ParseIRSource(void)
 	}
 }
 
+void AddGlobalVariable(void)
+{
+    llvm::Type* i32Type = llvm::Type::getInt32Ty(*TheContext);
+    new llvm::GlobalVariable(
+        *TheModule,
+        i32Type,
+        false,
+        llvm::GlobalValue::CommonLinkage,
+        llvm::ConstantInt::get(i32Type, 0),
+        "add_inst_count"
+    );
+}
+
+
 // Traverse Instructions in TheModule
 void TraverseModule(void)
 {
-	llvm::raw_os_ostream raw_cout( std::cout );
+    llvm::IRBuilder<> Builder(*TheContext);
+    llvm::Type* i32Type = llvm::Type::getInt32Ty(*TheContext);
+    llvm::GlobalVariable* addInstCount = TheModule->getNamedGlobal("add_inst_count");
 
-	// Module::iterator --> Function
-	for( llvm::Module::iterator ModIter = TheModule->begin(); ModIter != TheModule->end(); ++ModIter )
-	{
-		llvm::Function* Func = llvm::cast<llvm::Function>(ModIter);
+    for (auto &F : *TheModule)
+    {
+        for (auto &BB : F)
+        {
+            for (auto &I : BB)
+            {
+                if (llvm::isa<llvm::BinaryOperator>(I) && I.getOpcode() == llvm::Instruction::Add)
+                {
+                    Builder.SetInsertPoint(&I);
+                    Builder.CreateStore(
+                        Builder.CreateAdd(
+                            Builder.CreateLoad(i32Type, addInstCount),
+                            llvm::ConstantInt::get(i32Type, 1)
+                        ),
+                        addInstCount
+                    );
+                }
+            }
+        }
+    }
+}
 
-		for( llvm::Function::iterator FuncIter = Func->begin(); FuncIter != Func->end(); ++FuncIter )
-		{
-			llvm::BasicBlock* BB = llvm::cast<llvm::BasicBlock>(FuncIter);
+void AddPrintFunction(void)
+{
+    llvm::IRBuilder<> Builder(*TheContext);
+    llvm::Type* i32Type = llvm::Type::getInt32Ty(*TheContext);
+    llvm::GlobalVariable* addInstCount = TheModule->getNamedGlobal("add_inst_count");
 
-			for( llvm::BasicBlock::iterator BBIter = BB->begin(); BBIter != BB->end(); ++BBIter )
-			{
-				llvm::Instruction* Inst = llvm::cast<llvm::Instruction>(BBIter);
-			}
-		}
-	}
+    // Declare printf function
+    llvm::FunctionType* printfType = llvm::FunctionType::get(
+        llvm::Type::getInt32Ty(*TheContext),
+        {llvm::Type::getInt8PtrTy(*TheContext)},
+        true
+    );
+    llvm::Constant* printfFunc = TheModule->getOrInsertFunction("printf", printfType);
+
+    // Create print function
+    llvm::FunctionType* printFuncType = llvm::FunctionType::get(
+        llvm::Type::getVoidTy(*TheContext),
+        false
+    );
+    llvm::Function* printFunc = llvm::Function::Create(
+        printFuncType,
+        llvm::Function::ExternalLinkage,
+        "print_add_count",
+        TheModule.get()
+    );
+
+    llvm::BasicBlock* entryBB = llvm::BasicBlock::Create(*TheContext, "entry", printFunc);
+    Builder.SetInsertPoint(entryBB);
+
+    // Create printf call
+    llvm::Value* formatStr = Builder.CreateGlobalStringPtr("Number of add instructions: %d\n");
+    llvm::Value* loadedCount = Builder.CreateLoad(i32Type, addInstCount);
+    Builder.CreateCall(llvm::cast<llvm::Function>(printfFunc), {formatStr, loadedCount});
+
+    Builder.CreateRetVoid();
 }
 
 // Print TheModule to output path in human-readable format
