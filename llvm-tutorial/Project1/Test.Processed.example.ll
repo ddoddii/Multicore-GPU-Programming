@@ -1,4 +1,4 @@
-; ModuleID = 'Test.c'
+; ModuleID = './Test.ll'
 source_filename = "Test.c"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -14,20 +14,16 @@ define i32 @main() #0 {
   store i32 4, i32* %3, align 4
   store float 3.000000e+00, float* %4, align 4
   %5 = load i32, i32* %2, align 4
-  %6 = add nsw i32 %5, 0 ;remove
+  store i32 %5, i32* %2, align 4
+  %6 = load i32, i32* %2, align 4
   store i32 %6, i32* %2, align 4
-  %7 = load i32, i32* %2, align 4
-  %8 = add nsw i32 0, %7 ;remove
-  store i32 %8, i32* %2, align 4
-  %9 = load i32, i32* %3, align 4
-  %10 = mul nsw i32 %9, 1 ; remove
-  store i32 %10, i32* %3, align 4
-  %11 = load i32, i32* %3, align 4
-  %12 = mul nsw i32 1, %11 ;remove
-  store i32 %12, i32* %3, align 4
-  %13 = load float, float* %4, align 4
-  %14 = fmul float %13, 1.000000e+00
-  store float %14, float* %4, align 4
+  %7 = load i32, i32* %3, align 4
+  store i32 %7, i32* %3, align 4
+  %8 = load i32, i32* %3, align 4
+  store i32 %8, i32* %3, align 4
+  %9 = load float, float* %4, align 4
+  %10 = fmul float %9, 1.000000e+00
+  store float %10, float* %4, align 4
   ret i32 0
 }
 

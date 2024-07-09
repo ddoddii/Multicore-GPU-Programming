@@ -79,6 +79,21 @@ void ParseIRSource(void)
 	}
 }
 
+bool isConstantIntZero(llvm::Value* value) {
+	if (llvm::ConstantInt* CI = llvm::dyn_cast<llvm::ConstantInt>(value)) {
+		return CI->isZero();
+	}
+	return false;
+}
+
+bool isConstantIntOne(llvm::Value* value) {
+	if (llvm::ConstantInt* CI = llvm::dyn_cast<llvm::ConstantInt>(value)) {
+		return CI->equalsInt(1);
+	}
+	return false;
+}
+
+
 // Traverse Instructions in TheModule
 void TraverseModule(void)
 {
@@ -92,11 +107,37 @@ void TraverseModule(void)
 		for( llvm::Function::iterator FuncIter = Func->begin(); FuncIter != Func->end(); ++FuncIter )
 		{
 			llvm::BasicBlock* BB = llvm::cast<llvm::BasicBlock>(FuncIter);
+			std::vector< llvm::Instruction* > ToRemove; // to remove IRs
 
 			for( llvm::BasicBlock::iterator BBIter = BB->begin(); BBIter != BB->end(); ++BBIter )
 			{
 				llvm::Instruction* Inst = llvm::cast<llvm::Instruction>(BBIter);
+				
+				if (Inst->getOpcode() == llvm::Instruction::Add) {
+                    if (isConstantIntZero(Inst->getOperand(0))) {
+						// e.g) %6 = add i32 0, %5 이면 %6을 사용하는 모든 operand 를 %5로 교체해야 한다. 
+                        Inst->replaceAllUsesWith(Inst->getOperand(1)); 
+                        ToRemove.push_back(Inst);
+                    } else if (isConstantIntZero(Inst->getOperand(1))) {
+                        Inst->replaceAllUsesWith(Inst->getOperand(0));
+                        ToRemove.push_back(Inst);
+                    }
+                }
+
+				if (Inst->getOpcode() == llvm::Instruction::Mul) {
+                    if (isConstantIntOne(Inst->getOperand(0))) {
+                        Inst->replaceAllUsesWith(Inst->getOperand(1));
+                        ToRemove.push_back(Inst);
+                    } else if (isConstantIntOne(Inst->getOperand(1))) {
+                        Inst->replaceAllUsesWith(Inst->getOperand(0));
+                        ToRemove.push_back(Inst);
+                    }
+                }
 			}
+
+			for (int i = 0, Size = ToRemove.size(); i < Size; ++i) {
+                ToRemove[i]->eraseFromParent();
+            }
 		}
 	}
 }
