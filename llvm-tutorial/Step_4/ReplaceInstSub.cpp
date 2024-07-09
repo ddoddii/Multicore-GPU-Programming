@@ -90,8 +90,7 @@ void TraverseModule(void)
 		{
 			llvm::BasicBlock* BB = llvm::cast<llvm::BasicBlock>(FuncIter);
 			std::vector< llvm::Instruction* > AddInsts;
-			std::vector< llvm::Instruction* > SExInsts;
-
+			
 			for( llvm::BasicBlock::iterator BBIter = BB->begin(); BBIter != BB->end(); ++BBIter )
 			{
 				llvm::Instruction* AddInst = llvm::cast<llvm::Instruction>(BBIter);
@@ -99,83 +98,17 @@ void TraverseModule(void)
 				// if( Inst->isBinaryOp() ) {}
 				if( AddInst->getOpcode() == llvm::Instruction::Add )
 				{
-
-					int operands = AddInst->getNumOperands();
-					std::cout << "Num of AddInst Operands : " << operands << std::endl;
-
-					llvm::LLVMContext& context = AddInst->getContext();
-          llvm::IRBuilder<> Builder(AddInst);
-
-
-          llvm::Value* MulInst = Builder.CreateMul(AddInst->getOperand(0),AddInst->getOperand(1), "multmp");
-					// Create Mul Instruction
-//					llvm::Instruction* MulInst = llvm::BinaryOperator::Create( 
-//							llvm::Instruction::Mul,	/* Opcode */
-//							AddInst->getOperand(0),	/* A  */
-//							AddInst->getOperand(1),	/* B  */
-//							"multmp",	/* Name */
-//							AddInst /* BeforeInst */ );
-//					
-					std::cout << "Created Mul Instruction" << std::endl;
-
-
-					// Sign extend the result of Mul : 
-//					llvm::Instruction* SextInst = llvm::CastInst::Create(
-//							llvm::Instruction::SExt,
-//							MulInst,
-//							llvm::Type::getInt64Ty(context),
-//							"sextmp",
-//							AddInst
-//							);
-//
-          llvm::Value* SextInst = Builder.CreateSExt(MulInst, llvm::Type::getInt64Ty(context),"sextmp");	
-					std::cout << "Created SExt Instruction" << std::endl;
-
-
-
-					// Load C
-					llvm::LoadInst* LoadCInst = nullptr;
-					for (llvm::BasicBlock::iterator it = BB->begin(); it != BB->end(); ++it)
-					{
-						if(llvm::LoadInst* loadInst = llvm::dyn_cast<llvm::LoadInst>(it))
-						{
-							if (loadInst->getType()->isIntegerTy(64))
-							{
-								LoadCInst = loadInst;
-								break;
-							}
-						}
-					}
-					if (!LoadCInst)
-					{
-						std::cerr<<"Error : No suitable load instruction for C" << std::endl;
-						continue;
-					}
-					std::cout << "Found load instruction for C : " <<  std::endl;
-
-					// Create Sub Instruction
-//					llvm::Instruction* SubInst = llvm::BinaryOperator::Create(
-//							llvm::Instruction::Sub,
-//							SextInst,
-//							LoadCInst,
-//							"subtmp",
-//							AddInst
-//							);
-//
-          llvm::Value* SubInst = Builder.CreateSub(SextInst, LoadCInst, "subtmp");
-					std::cout << "Created Sub Instruction : " <<  std::endl;
-
-
-		
+					llvm::Instruction* SubInst = llvm::BinaryOperator::Create( 
+							llvm::Instruction::Sub,	/* Opcode */
+							AddInst->getOperand(0),	/* S1 */
+							AddInst->getOperand(1),	/* S2 */
+							"subtmp",	/* Name */
+							AddInst /* BeforeInst */ );
 					AddInst->replaceAllUsesWith( SubInst );
 
 					AddInsts.push_back( AddInst );
-				
-				
 				}
-
 			}
-
 
 			for( int i=0, Size=AddInsts.size(); i<Size; ++i ) AddInsts[i]->eraseFromParent();
 		}
