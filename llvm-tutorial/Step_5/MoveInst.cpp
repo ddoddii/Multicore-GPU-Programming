@@ -90,8 +90,9 @@ void TraverseModule(void)
 		{
 			llvm::BasicBlock* BB = llvm::cast<llvm::BasicBlock>(FuncIter);
 
-			std::vector< llvm::StoreInst* > StoreInsts;
-			llvm::Instruction* LastInst;
+			
+			std::vector< llvm::StoreInst* > StoreInsts; // Store 명령어 저장
+			llvm::Instruction* LastInst; // 마지막 명령어 저장
 			
 			for( llvm::BasicBlock::iterator BBIter = BB->begin(); BBIter != BB->end(); ++BBIter )
 			{
@@ -103,9 +104,10 @@ void TraverseModule(void)
 					StoreInsts.push_back( llvm::cast< llvm::StoreInst >( Inst ) );
 				}
 
-				LastInst = Inst;
+				LastInst = Inst; // 마지막 명령어는 반드시 TerminatorInst 이여야 함(Return, Br 등)
 			}
 
+			// Store 명령어들을 Basic Block 내의 마지막 명령어 이전으로 위치 이동
 			for( int i=0, Size=StoreInsts.size(); i<Size; ++i )
 			{
 				StoreInsts[i]->moveBefore(LastInst);
